@@ -1,0 +1,72 @@
+
+/* опишем базовый стиль кнопки калькулятора */
+.my-btn { 
+    margin-right: 5px;           /* задаем отступ от кнопки справа */
+    margin-top: 5px;             /* задаем отступ от кнопки сверху*/
+    width: 50px;                 /* задаем ширину кнопки */
+    height: 50px;                /* задаем высоту кнопки */
+    border: none;                /* отключаем обводку */
+    background: rgb(255,102,0);         
+    color: #fff;               
+    font-size: 18px; 
+    /*font-weight: 700;    */      /* увеличим размер шрифта. root em размер шрифта зависит от html*/
+    font-family: trade-gothic; /* сменим шрифт */
+    cursor: pointer;             /* при наведении на кнопку курсор будет изменен
+                                    со стрелки на 'указательный палец' */
+    user-select: none;           /* отключаем возможность выделить текст внутри кнопки */
+  } 
+
+  /* hover - это состояние элемента, когда на него наведен курсор */
+  .my-btn:hover {
+    background: #fff; /* при наведение курсора на кнопку, она будет окрашена в белый */
+    color: #f60;
+    border-color: #f60;
+    border: 1px solid;
+  }
+  /* селектор для кнопок первостепенных и второстепенных операций */
+  .my-btn.primary { 
+    background: #000; 
+  }
+ 
+  /* селектор для кнопки расчета выражения (=) */
+  .my-btn.execute { 
+    background-color: #fff;
+    color: #f60;
+    border: 1px solid;
+    border-color: #f60;
+    width: 110px;          /* сделаем кнопку шире других */
+  }
+  
+  .my-btn.execute:hover {
+    background: #f60;        
+    color: #fff;
+    border-color: #f60; 
+  }
+
+  .my-btn.primary:hover {
+    background: #fff;        
+    color: #000;
+    border-color: #000; 
+  }
+  /* селектор для поля вывода результата */
+  .result { 
+    width: 220px;
+    height: 50px;
+    margin-bottom: 15px;         /* отступ снизу */
+    padding-right: 10px;         /* выступ справа */
+    background: #fff;
+    text-align: right;           /* примагнитим текст к правой стороне */
+    color: #000;              /* цвет текста белый */
+    border: 1px solid;          /* сплошная рамка */
+    border-color: #f60;
+    font-size: 18px;
+    font-family: blender-pro;
+  }
+
+  .central {
+    display: flex;             /* Включаем Flexbox для класса central*/
+    justify-content: center;   /* Выравнивание по горизонтали (ось x)*/
+    align-items: center;       /* Выравнивание по вертикали (ось y)*/
+    height: 100vh;             /* Высота 100% от окна браузера */
+    flex-direction: column;   /* Выравнивание элементов по вертикали */
+  }
