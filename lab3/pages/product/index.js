@@ -103,49 +103,50 @@ export class ProductPage {
         const engineCapacitySmalComDiv = [125, 390, 450];
         const engineCapacityEuclid = this.euclid(engineCapacitySmalComDiv);
 
-        const vehicleWords = ['listen', 'silent', 'enlist', 'hello', 'world', 'dog', 'god'];
+        const vehicleWords = ['carb', 'barc', 'moto', 'otom', 'cycle', 'cylec', 'engine'];
         const vehicleAnagram = this.anagram(vehicleWords);
         
         return `
             <div id="product-page">
                 <div id="product-card"></div>
                 <div class="featuresStyle">
-                    <h3>Функция concatenate</h3>
+                    <h3>Конкатенация характеристик мотоцикла</h3>
                     <div>
-                        <p>Характеристики мотоцикла:</p>
+                        <p>Характеристики:</p>
                         <ul>
                             ${product.features.map(f => `<li>${f}</li>`).join('')}
                             <!- для каждого элемента массива выполняем map-->
                         </ul>
-                        <p>Результат concatenate:</p>
+                        <p>После конкатенации:</p>
                         <div>${vehicleFeatures}</div>
                     </div>
                 </div>
                 <div class="functionStyle">
-                    <h3>Функция erase</h3>
+                    <h3>Очищение некорректного ввода объема двигателя</h3>
                     <div>
                         <p>Тестовые данные:</p>
                         <ul>
                             ${unerasedData.map(d => `<li>${d}</li>`).join('')}
                         </ul>
-                        <p>Результат erase:</p>
+                        <p>После удаления невалидных значений:</p>
                         <div>${erasedData}</div>
                     </div>
                 </div>
                 <div class="functionStyle">
-                    <h3>Функция euclid (НОД)</h3>
+                    <h3>НОД объема двигателя</h3>
                     <div class="demo-content">
-                    <p>НОД чисел:</p>
+                    <p>Двигатели, см^3:</p>
                     <ul>
                         ${engineCapacitySmalComDiv.map(c => `<li>${c}</li>`).join('')}
                     </ul>
+                    <p>НОД:</p>
                     <div>${engineCapacityEuclid}</div>
                     </div>
                 </div>
                 <div class="functionStyle">
-                <h3>Функция anagram</h3>
+                <h3>Анаграммы мототематики</h3>
                 <div>
-                    <p>Тестовые слова:</p>
+                    <p>Набор данных:</p>
                     <ul>
                         ${vehicleWords.map(w => `<li>${w}</li>`).join('')}
                     </ul>
