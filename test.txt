@@ -1,0 +1,184 @@
+import { ProductComponent } from "../../components/product/index.js";  // Компонент для рендеринга продукта
+import { MainPage } from "../main/index.js";  // Главная страница для возврата
+import { HeaderComponent } from "../../components/header/index.js";  // Компонент для шапки
+
+import { ajax } from "../../modules/ajax.js";  // Модуль для AJAX-запросов
+import { VehiclesU } from "../../../lab5test/modules/VehiclesUrls.js";  // URL для работы с API
+
+export class ProductPage {
+    constructor(parent, id) {
+        this.parent = parent;
+        this.id = id;
+    }
+
+    // Функция получения данных о товаре по ID
+    getData() {
+        ajax.get(VehiclesU.getVehicleById(this.id), (data, status) => {
+            if (status === 200 && data) {
+                this.renderData(data);  // Если данные получены успешно, вызываем отрисовку карточки
+            } else {
+                console.error('Ошибка получения товара по ID');
+            }
+        });
+    }
+
+    // Функция для отрисовки карточки товара
+    renderData(item) {
+        const productContainer = document.getElementById('product-card');
+        
+        // Проверяем, что элемент существует
+        if (productContainer) {
+            const product = new ProductComponent(productContainer);
+            product.render(item); // Рендерим данные о продукте
+    
+            // Привязываем обработчик события к header, если нужно
+            const header = document.querySelector('.header'); // Пример селектора для header
+            if (header) {
+                header.addEventListener('click', this.clickBack.bind(this));
+            } else {
+                console.error('Не найден элемент header');
+            }
+        } else {
+            console.error('Не найден контейнер для карточки товара');
+        }
+    }
+    
+    // Генерация HTML контента страницы
+    getHTML(product) {
+        const vehicleFeatures = product.features.join(', ');
+        const unerasedData = [0, 125, false, 390, undefined, '', 450, null];
+        const erasedData = this.erase(unerasedData);
+        const engineCapacitySmalComDiv = [125, 390, 450];
+        const engineCapacityEuclid = this.euclid(engineCapacitySmalComDiv);
+        const vehicleWords = ['carb', 'barc', 'moto', 'otom', 'cycle', 'cylec', 'engine'];
+        const vehicleAnagram = this.anagram(vehicleWords);
+    
+        return `
+            <div id="product-page">
+                <div id="product-card"></div>  <!-- Место для отображения карточки товара -->
+                <div class="featuresStyle">
+                    <h3>Конкатенация характеристик мотоцикла</h3>
+                    <div>
+                        <p>Характеристики:</p>
+                        <ul>
+                            ${product.features.map(f => `<li>${f}</li>`).join('')}
+                        </ul>
+                        <p>После конкатенации:</p>
+                        <div>${vehicleFeatures}</div>
+                    </div>
+                </div>
+                <div class="functionStyle">
+                    <h3>Очищение некорректного ввода объема двигателя</h3>
+                    <div>
+                        <p>Тестовые данные:</p>
+                        <ul>
+                            ${unerasedData.map(d => `<li>${d}</li>`).join('')}
+                        </ul>
+                        <p>После удаления невалидных значений:</p>
+                        <div>${erasedData}</div>
+                    </div>
+                </div>
+                <div class="functionStyle">
+                    <h3>НОД объема двигателя</h3>
+                    <div class="demo-content">
+                    <p>Двигатели, см^3:</p>
+                    <ul>
+                        ${engineCapacitySmalComDiv.map(c => `<li>${c}</li>`).join('')}
+                    </ul>
+                    <p>НОД:</p>
+                    <div>${engineCapacityEuclid}</div>
+                    </div>
+                </div>
+                <div class="functionStyle">
+                    <h3>Анаграммы мототематики</h3>
+                    <div>
+                        <p>Набор данных:</p>
+                        <ul>
+                            ${vehicleWords.map(w => `<li>${w}</li>`).join('')}
+                        </ul>
+                        <p>Группы анаграмм:</p>
+                        <div>
+                            ${vehicleAnagram.map(group => `
+                                <div class="anagram-group"> ${group.join(', ')}</div>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    // Функция для удаления невалидных значений
+    erase(vehicleUnerasedData) {
+        const invalidValues = new Set([false, undefined, '', 0, null]);
+        return vehicleUnerasedData.filter(value => !invalidValues.has(value));
+    }
+
+    // Расчет НОД (наибольший общий делитель)
+    euclid(vehicleEngineCap) {
+        if (vehicleEngineCap.length === 0) return 0;
+        
+        let vehicleSmallDiv = vehicleEngineCap[0];
+        for (let i = 1; i < vehicleEngineCap.length; i++) {
+            let a = vehicleSmallDiv;
+            let b = vehicleEngineCap[i];
+            while (`${b}` !== '0') {
+                const temp = a % b;
+                a = b;
+                b = temp;
+            }
+            vehicleSmallDiv = a;
+        }
+        
+        return vehicleSmallDiv;
+    }
+
+    // Генерация анаграмм
+    anagram(vehicleWords) {
+        const vehicleGroups = {};
+        const wordsSet = new Set(vehicleWords);
+
+        for (const word of wordsSet) {
+            const sorted = word.split('').sort().join('');
+            if (!vehicleGroups[sorted]) {
+                vehicleGroups[sorted] = [];
+            }
+            vehicleGroups[sorted].push(word);
+        }
+
+        return Object.values(vehicleGroups)
+            .filter(group => group.length >= 2)
+            .map(group => group.sort())
+            .sort((a, b) => a[0].localeCompare(b[0]));
+    }
+
+    // Получение корневого элемента страницы
+    get pageRoot() {
+        return document.getElementById('product-page');
+    }
+
+    // Функция для возвращения на главную страницу
+    clickBack() {
+        // Пример перехода на главную страницу (вы можете изменить это под свои нужды)
+        const mainPage = new MainPage(this.parent);
+        mainPage.render(); // Отрисовываем главную страницу
+    }
+    
+
+    // Основная функция отрисовки страницы
+    render() {
+        this.parent.innerHTML = '';  // Очищаем контейнер страницы
+    
+        // Отрисовываем шапку (header)
+        const header = new HeaderComponent(this.parent);
+        header.render();  // Шапка должна быть отрисована до начала работы с карточкой продукта
+    
+        // Генерируем HTML контент страницы (передаем пустой объект для подставления данных)
+        const productContainerHTML = this.getHTML({ features: [] });
+        this.parent.insertAdjacentHTML('beforeend', productContainerHTML);
+    
+        // После добавления HTML контейнеров в DOM, начинаем загружать данные и рендерить продукт
+        this.getData();
+    }
+    
+}
