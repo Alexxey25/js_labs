@@ -1,12 +1,19 @@
+import { ajax } from "../../modules/ajax.js";
+import { VehiclesU } from "../../modules/VehiclesUrls.js";
+
 export class RemoveCardButton {
     constructor(parent) {
         this.parent = parent;
     }
 
     removeCard() {
-        if (this.parent.getData().length > 0) {
-            this.parent.data.pop();
-            this.parent.render();
-        }
+        const lastCard = this.parent.data.pop();
+        const lastCardId = lastCard.id;
+
+        ajax.delete(VehiclesU.removeVehicleById(lastCardId), () => {
+            this.parent.getData(() => {
+                this.parent.render();
+            });
+        });
     }
 }

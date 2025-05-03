@@ -25,11 +25,11 @@ export class ProductComponent {
             `
         )
     }
-    addListeners(data, listener) {  //подпись на событие по клику
-        document
-            .getElementById(`click-card-${data.id}`)
-            .addEventListener("click", listener)
-            //при нажатии на кнопку будет вызвана функция listener
+    addListeners(data, listener) { 
+        const cardButton = document.getElementById(`click-card-${data.id}`);
+        if (cardButton) {
+            cardButton.addEventListener("click", listener);
+        }
     }
 
     render(data, listener) {

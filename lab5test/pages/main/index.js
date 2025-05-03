@@ -37,24 +37,19 @@ export class MainPage {
         `;
     }
 
-    getData(callback) {
-        ajax.get(VehiclesU.getVehicles(), (data, status) => {
-            if (status === 200 && Array.isArray(data)) {
-                this.data = data;
-                this.renderFilteredCards();
-                if (callback) callback();
-            } else {
-                console.error("Ошибка загрузки данных:", status, data);
-            }
+    getData() {
+        ajax.get(VehiclesU.getVehicles(), (data) => {
+            this.data = data;
+            this.renderFilteredCards();
+            this.renderData(this.data);
         });
     }
 
+
     renderData(items) {
         const container = this.pageRoot;
-        if (!container) return;
         
         container.innerHTML = '';
-
         items.forEach((item) => {
             const productCard = new ProductCardComponent(container);
             productCard.render(item, this.clickCard.bind(this));
@@ -62,10 +57,7 @@ export class MainPage {
     }
 
     clickCard(e) {
-        const cardElement = e.target.closest('[data-id]');
-        if (!cardElement) return;
-        
-        const cardId = cardElement.dataset.id;
+        const cardId = e.target.dataset.id;
         const productPage = new ProductPage(this.parent, cardId);
         productPage.render();
     }
@@ -73,47 +65,46 @@ export class MainPage {
     setupFilter() {
         const filter = document.getElementById('engine_filter');
         const valueDisplay = document.getElementById('val_value');
-
-        if (!filter || !valueDisplay) return;
-
+        //подписка на клик 
+        //двигая ползунок input событие подается в ф-ию
         filter.addEventListener('input', (e) => {
-            this.value_filter = parseInt(e.target.value);
+            //e.target - ссылка на ползунок <input id="engine_filter">
+            this.value_filter = e.target.value;
+            //получение текущего содержания элемента .textContent и обновление
             valueDisplay.textContent = `${this.value_filter}cc`;
+            //обновляем значение span
             this.renderFilteredCards();
         });
     }
-
-    renderFilteredCards() {
-        if (!this.data.length) return;
+    
+    renderFilteredCards() { //обновление карточек
+        this.pageRoot.innerHTML = ''; //очищаемм содержимое
         
-        this.pageRoot.innerHTML = '';
-        
-        const filteredData = this.data.filter(bike => bike.engine >= this.value_filter);
-        
-        filteredData.forEach(bike => {
-            const card = new ProductCardComponent(this.pageRoot);
-            card.render(bike, this.clickCard.bind(this));
-        });
+        this.data
+            .filter(bike => bike.engine >= this.value_filter)
+            .forEach(bike => {
+                const card = new ProductCardComponent(this.pageRoot);
+                card.render(bike, this.clickCard.bind(this)); //привязка clickCard как обработчика клика
+            });
+            //очищаем-> фильтруем -> рисуем
     }
-
+    
     render() {
-        this.parent.innerHTML = '';
-        
+        this.parent.innerHTML = ''; 
         const header = new HeaderComponent(this.parent);
         header.render();
-        
+    
         const html = this.getHTML();
         this.parent.insertAdjacentHTML('beforeend', html);
-        
+    
         this.setupFilter();
-        
-        this.getData(() => {
-            const addBtn = new AddCardButton(this);
-            const removeBtn = new RemoveCardButton(this);
-            
-            document.getElementById('go_home_btn')?.addEventListener('click', () => addBtn.addCard());
-            document.getElementById('add_card_btn')?.addEventListener('click', () => addBtn.addCard())
-            document.getElementById('remove_card_btn')?.addEventListener('click', () => removeBtn.removeCard())
-        });
+        this.getData();
+
+        const addBtn = new AddCardButton(this);
+        const removeBtn = new RemoveCardButton(this);
+
+        document.getElementById('go_home_btn').addEventListener('click', () => addBtn.addCard());
+        document.getElementById('add_card_btn').addEventListener('click', () => addBtn.addCard());
+        document.getElementById('remove_card_btn').addEventListener('click', () => removeBtn.removeCard());
     }
 }
