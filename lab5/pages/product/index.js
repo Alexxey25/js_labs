@@ -4,7 +4,7 @@ import { HeaderComponent } from "../../components/header/index.js";
 import { CustomizePage } from "../customize/index.js";
 
 import { ajax } from "../../modules/ajax.js";
-import { VehiclesU } from "../../../lab5test/modules/VehiclesUrls.js";
+import { VehiclesU } from "../../modules/VehiclesUrls.js";
 
 export class ProductPage {
     constructor(parent, id) {
@@ -12,10 +12,14 @@ export class ProductPage {
         this.id = id;
     }
 
-    getData() {
-        ajax.get(VehiclesU.getVehicleById(this.id), (data) => {
+    async getData() {
+        try {
+            const res = await fetch(VehiclesU.getVehicleById(this.id));
+            const data = await res.json();
             this.renderData(data);
-        });
+        } catch (err) {
+            console.error("Ошибка загрузки данных:", err);
+        }
     }
 
     renderData(item) {

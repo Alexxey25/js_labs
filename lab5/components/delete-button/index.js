@@ -6,14 +6,20 @@ export class RemoveCardButton {
         this.parent = parent;
     }
 
-    removeCard() {
+    async removeCard() {
         const lastCard = this.parent.data.pop();
+        if (!lastCard) return;
         const lastCardId = lastCard.id;
-
-        ajax.delete(VehiclesU.removeVehicleById(lastCardId), () => {
-            this.parent.getData(() => {
-                this.parent.render();
+        
+        try {
+            await fetch(VehiclesU.removeVehicleById(lastCardId), {
+                method: 'DELETE',
             });
-        });
+
+            await this.parent.getData();
+            this.parent.render();
+        } catch (err) {
+            console.error("Ошибка при удалении:", err);
+        }
     }
 }

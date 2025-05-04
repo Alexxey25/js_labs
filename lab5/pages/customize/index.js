@@ -1,6 +1,6 @@
 import { HeaderComponent } from "../../components/header/index.js";
 import { ajax } from "../../modules/ajax.js";
-import { VehiclesU } from "../../../lab5test/modules/VehiclesUrls.js";
+import { VehiclesU } from "../../modules/VehiclesUrls.js";
 import { MainPage } from "../main/index.js";
 
 export class CustomizePage {
@@ -8,15 +8,19 @@ export class CustomizePage {
         this.parent = parent;
         this.id = id;
     }
-    getData() {
+    async getData() {
         if (this.id) {
-          ajax.get(VehiclesU.getVehicleById(this.id), (data) => {
-            this.renderForm(data);
-          });
+            try {
+                const res = await fetch(VehiclesU.getVehicleById(this.id));
+                const data = await res.json();
+                this.renderForm(data);
+            } catch (err) {
+                console.error("Ошибка загрузки данных:", err);
+            }
         } else {
-          this.renderForm(this.getEmptyData()); // Для новой карточки
+            this.renderForm(this.getEmptyData());
         }
-      }
+    }
 
     getEmptyData() {
     return {
@@ -59,26 +63,33 @@ export class CustomizePage {
         apply_btn.innerHTML = this.getHTML(data);
 
         const btn = apply_btn.querySelector(`#click-card-${data.id}`);
-        btn.addEventListener('click', () => {
+        btn.addEventListener('click', async () => {
             const updatedData = {
                 src: apply_btn.querySelector('#src').value,
                 title: apply_btn.querySelector('#title').value,
                 text: apply_btn.querySelector('#text').value,
                 engine: apply_btn.querySelector('#engine').value,
             };
-
-            if (this.id) {
-                ajax.patch(VehiclesU.updateVehicleById(this.id), updatedData, () => {
-                    this.parent.innerHTML = '';
-                    const main = new MainPage(this.parent);
-                    main.render();
-                });
-            } else {
-                ajax.post(VehiclesU.createVehicle(), updatedData, () => {
-                    this.parent.innerHTML = '';
-                    const main = new MainPage(this.parent);
-                    main.render();
-                });
+        
+            try {
+                if (this.id) {
+                    await fetch(VehiclesU.updateVehicleById(this.id), {
+                        method: 'PATCH',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(updatedData)
+                    });
+                } else {
+                    await fetch(VehiclesU.createVehicle(), {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(updatedData)
+                    });
+                }
+                this.parent.innerHTML = '';
+                const main = new MainPage(this.parent);
+                main.render();
+            } catch (err) {
+                console.error("Ошибка при отправке данных:", err);
             }
         });
 

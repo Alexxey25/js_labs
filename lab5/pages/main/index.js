@@ -37,14 +37,17 @@ export class MainPage {
         `;
     }
 
-    getData() {
-        ajax.get(VehiclesU.getVehicles(), (data) => {
+    async getData() {
+        try {
+            const res = await fetch(VehiclesU.getVehicles());
+            const data = await res.json();
             this.data = data;
             this.renderFilteredCards();
             this.renderData(this.data);
-        });
+        } catch (err) {
+            console.error("Ошибка загрузки данных:", err);
+        }
     }
-
 
     renderData(items) {
         const container = this.pageRoot;
