@@ -90,7 +90,6 @@ export class CustomizePage {
         this.parent.innerHTML = '';
         const header = new HeaderComponent(this.parent);
         header.render();
-        
         this.getData();
     }
 }
