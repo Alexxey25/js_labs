@@ -10,12 +10,11 @@ export class RemoveCardButton {
         const lastCard = this.parent.data.pop();
         if (!lastCard) return;
         const lastCardId = lastCard.id;
-        
+
         try {
             await fetch(VehiclesU.removeVehicleById(lastCardId), {
                 method: 'DELETE',
             });
-
             await this.parent.getData();
             this.parent.render();
         } catch (err) {
