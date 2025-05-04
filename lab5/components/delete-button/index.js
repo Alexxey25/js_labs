@@ -15,6 +15,7 @@ export class RemoveCardButton {
             await fetch(VehiclesU.removeVehicleById(lastCardId), {
                 method: 'DELETE',
             });
+            
             await this.parent.getData();
             this.parent.render();
         } catch (err) {
