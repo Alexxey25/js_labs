@@ -16,7 +16,7 @@ export class ProductComponent {
                             <div class="card-body">
                                 <h2 class="card-title">${data.title}</h2>
                                 <p class="card-text card_descriptions">${data.text}</p>
-                                <button class="main_buttons" id="click-card-${data.id}" data-id="${data.id}">ПЕРЕЙТИ К МОДЕЛИ</button>
+                                <button class="main_buttons" id="click-card-${data.id}" data-id="${data.id}">РЕДАКТИРОВАТЬ</button>
                             </div>
                         </div>
                     </div>
