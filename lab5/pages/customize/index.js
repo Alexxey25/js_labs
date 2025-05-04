@@ -85,7 +85,6 @@ export class CustomizePage {
 
         this.parent.insertAdjacentElement('afterbegin', apply_btn);
     }
-    
     render() {
         this.parent.innerHTML = '';
         const header = new HeaderComponent(this.parent);
