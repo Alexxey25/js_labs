@@ -1,4 +1,3 @@
-import { ajax } from "../../modules/ajax.js";
 import { VehiclesU } from "../../modules/VehiclesUrls.js";
 
 export class RemoveCardButton {
